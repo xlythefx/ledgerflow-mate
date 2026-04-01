@@ -101,6 +101,7 @@ class ApiClient {
     for (let attempt = 0; attempt <= retries; attempt++) {
       const response = await fetch(url, {
         ...options,
+        credentials: "include",
         headers: { ...this.defaultHeaders, ...(options.headers || {}) },
       });
 

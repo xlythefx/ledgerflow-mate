@@ -238,7 +238,7 @@ export default function ReconciliationPage() {
         {step === "mapping" && (
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Map each CSV column to a database field. <span className="text-destructive">*</span> Date, Description, and Amount are required.
+              Map each CSV column to a database field. <span className="text-destructive">*</span> Date, Paid To, and Amount are required.
             </p>
 
             <div className="glass-card divide-y divide-border">
@@ -277,7 +277,7 @@ export default function ReconciliationPage() {
 
             {!allRequiredMapped && (
               <p className="text-xs text-destructive">
-                Please map Date, Description, and Amount before proceeding.
+                Please map Date, Paid To, and Amount before proceeding.
               </p>
             )}
 

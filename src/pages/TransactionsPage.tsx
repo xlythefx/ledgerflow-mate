@@ -18,7 +18,6 @@ import { parseReason } from "@/data/reasons";
 export default function TransactionsPage() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
-  const [category, setCategory] = useState("all");
   const [department, setDepartment] = useState("all");
   const [project, setProject] = useState("all");
 

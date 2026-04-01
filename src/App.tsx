@@ -8,6 +8,7 @@ import TransactionsPage from "./pages/TransactionsPage";
 import ReconciliationPage from "./pages/ReconciliationPage";
 import ReportsPage from "./pages/ReportsPage";
 import NotificationsPage from "./pages/NotificationsPage";
+import InvoicesPage from "./pages/InvoicesPage";
 import NotFound from "./pages/NotFound";
 
 const App = () => (
@@ -20,6 +21,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<TransactionsPage />} />
             <Route path="/reconciliation" element={<ReconciliationPage />} />
+            <Route path="/invoices" element={<InvoicesPage />} />
             <Route path="/reports" element={<ReportsPage />} />
             <Route path="/notifications" element={<NotificationsPage />} />
             <Route path="*" element={<NotFound />} />

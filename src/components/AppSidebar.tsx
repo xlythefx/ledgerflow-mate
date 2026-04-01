@@ -1,4 +1,4 @@
-import { LayoutDashboard, ArrowLeftRight, BarChart3, Bell, ExternalLink, Receipt, LogOut } from "lucide-react";
+import { LayoutDashboard, ArrowLeftRight, BarChart3, Bell, ExternalLink, Receipt, FileText, LogOut } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -22,6 +22,7 @@ const MAIN_APP_URL = import.meta.env.VITE_MAIN_APP_URL || "https://app.company.c
 const navItems = [
   { title: "Transactions", url: "/", icon: Receipt },
   { title: "Reconciliation", url: "/reconciliation", icon: ArrowLeftRight },
+  { title: "Invoices", url: "/invoices", icon: FileText },
   { title: "Reports", url: "/reports", icon: BarChart3 },
   { title: "Notifications", url: "/notifications", icon: Bell },
 ];

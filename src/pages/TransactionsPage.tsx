@@ -116,6 +116,9 @@ export default function TransactionsPage() {
                   <TableCell className="text-sm font-mono text-muted-foreground">{txn.transactionId}</TableCell>
                   <TableCell className="text-sm font-medium">{txn.recipient}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">{txn.payer}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground max-w-[200px] truncate">
+                    {txn.reason}
+                  </TableCell>
                   <TableCell>
                     <ReasonBadges reason={txn.reason} />
                   </TableCell>

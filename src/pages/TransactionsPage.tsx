@@ -1,26 +1,20 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { TagBadge } from "@/components/TagBadge";
+import { ReasonBadges } from "@/components/ReasonBadges";
+import { ReasonFilter } from "@/components/ReasonFilter";
+import { ExpenseSummaryCard } from "@/components/ExpenseSummaryCard";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Search, Filter, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { mockTransactions } from "@/data/mockData";
+import { parseReason } from "@/data/reasons";
 
 const statusStyles: Record<string, string> = {
   completed: "bg-success/15 text-success border-success/30",
@@ -31,25 +25,38 @@ const statusStyles: Record<string, string> = {
 export default function TransactionsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [tagFilter, setTagFilter] = useState("all");
+  const [category, setCategory] = useState("all");
+  const [department, setDepartment] = useState("all");
+  const [project, setProject] = useState("all");
 
-  const allTags = Array.from(
-    new Set(mockTransactions.flatMap((t) => t.tags.map((tag) => tag.label)))
-  );
+  const filtered = useMemo(() => {
+    return mockTransactions.filter((t) => {
+      const matchesSearch =
+        t.recipient.toLowerCase().includes(search.toLowerCase()) ||
+        t.transactionId.toLowerCase().includes(search.toLowerCase());
+      const matchesStatus = statusFilter === "all" || t.status === statusFilter;
 
-  const filtered = mockTransactions.filter((t) => {
-    const matchesSearch =
-      t.recipient.toLowerCase().includes(search.toLowerCase()) ||
-      t.transactionId.toLowerCase().includes(search.toLowerCase());
-    const matchesStatus = statusFilter === "all" || t.status === statusFilter;
-    const matchesTag =
-      tagFilter === "all" || t.tags.some((tag) => tag.label === tagFilter);
-    return matchesSearch && matchesStatus && matchesTag;
-  });
+      const { segments } = parseReason(t.reason);
+      const matchesCategory = category === "all" || segments[0] === category;
+      const matchesDept = department === "all" || segments[1] === department;
+      const matchesProject = project === "all" || segments[2] === project;
+
+      return matchesSearch && matchesStatus && matchesCategory && matchesDept && matchesProject;
+    });
+  }, [search, statusFilter, category, department, project]);
+
+  const activeFilterLabel = [
+    category !== "all" ? category : null,
+    department !== "all" ? department : null,
+    project !== "all" ? project : null,
+  ].filter(Boolean).join(" › ") || null;
 
   return (
     <DashboardLayout title="Transactions">
       <div className="space-y-4">
+        {/* KPI Cards */}
+        <ExpenseSummaryCard transactions={filtered} activeFilter={activeFilterLabel} />
+
         {/* Filters */}
         <div className="flex items-center gap-3 flex-wrap">
           <div className="relative flex-1 min-w-[240px] max-w-md">
@@ -72,20 +79,14 @@ export default function TransactionsPage() {
               <SelectItem value="failed">Failed</SelectItem>
             </SelectContent>
           </Select>
-          <Select value={tagFilter} onValueChange={setTagFilter}>
-            <SelectTrigger className="w-[160px] bg-card border-border">
-              <Filter className="h-3.5 w-3.5 mr-1" />
-              <SelectValue placeholder="Filter by Tag" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Tags</SelectItem>
-              {allTags.map((tag) => (
-                <SelectItem key={tag} value={tag}>
-                  {tag}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <ReasonFilter
+            category={category}
+            department={department}
+            project={project}
+            onCategoryChange={setCategory}
+            onDepartmentChange={setDepartment}
+            onProjectChange={setProject}
+          />
           <div className="ml-auto text-sm text-muted-foreground">
             {filtered.length} transactions
           </div>
@@ -100,7 +101,7 @@ export default function TransactionsPage() {
                 <TableHead className="text-muted-foreground font-medium">Transaction ID</TableHead>
                 <TableHead className="text-muted-foreground font-medium">Recipient</TableHead>
                 <TableHead className="text-muted-foreground font-medium">Payer</TableHead>
-                <TableHead className="text-muted-foreground font-medium">Tags</TableHead>
+                <TableHead className="text-muted-foreground font-medium">Reason</TableHead>
                 <TableHead className="text-muted-foreground font-medium text-right">Amount</TableHead>
                 <TableHead className="text-muted-foreground font-medium">Status</TableHead>
               </TableRow>
@@ -108,16 +109,14 @@ export default function TransactionsPage() {
             <TableBody>
               {filtered.map((txn) => (
                 <TableRow key={txn.id} className="border-border hover:bg-accent/30 transition-colors">
-                  <TableCell className="text-sm">{new Date(txn.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}</TableCell>
+                  <TableCell className="text-sm">
+                    {new Date(txn.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                  </TableCell>
                   <TableCell className="text-sm font-mono text-muted-foreground">{txn.transactionId}</TableCell>
                   <TableCell className="text-sm font-medium">{txn.recipient}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">{txn.payer}</TableCell>
                   <TableCell>
-                    <div className="flex gap-1 flex-wrap">
-                      {txn.tags.map((tag) => (
-                        <TagBadge key={tag.label} tag={tag} />
-                      ))}
-                    </div>
+                    <ReasonBadges reason={txn.reason} />
                   </TableCell>
                   <TableCell className="text-sm font-medium text-right tabular-nums">
                     ${txn.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}

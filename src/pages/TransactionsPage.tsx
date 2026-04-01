@@ -16,12 +16,6 @@ import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { mockTransactions } from "@/data/mockData";
 import { parseReason } from "@/data/reasons";
 
-const statusStyles: Record<string, string> = {
-  completed: "bg-success/15 text-success border-success/30",
-  pending: "bg-warning/15 text-warning border-warning/30",
-  failed: "bg-destructive/15 text-destructive border-destructive/30",
-};
-
 export default function TransactionsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");

@@ -153,7 +153,7 @@ export default function ReportsPage() {
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Categories</p>
+                  <p className="text-sm text-muted-foreground">Reasons</p>
                   <p className="text-2xl font-bold mt-1 tabular-nums">{byTag.length}</p>
                   <p className="text-xs text-muted-foreground mt-1">Active tags</p>
                 </div>

@@ -75,8 +75,8 @@ class ApiClient {
       };
 
       if (response.status === 401) {
-        this.clearToken();
-        toast.error("Session expired. Please log in again.");
+        window.location.href = LOGIN_URL;
+        return;
       } else if (response.status === 403) {
         toast.error("You don't have permission to perform this action.");
       } else if (response.status === 422) {

@@ -34,9 +34,11 @@ export default function TransactionsPage() {
       const matchesDept = department === "all" || segments[1] === department;
       const matchesProject = project === "all" || segments[2] === project;
 
-      return matchesSearch && matchesCategory && matchesDept && matchesProject;
+      const matchesBank = bankFilter === "all" || t.bank === bankFilter;
+
+      return matchesSearch && matchesCategory && matchesDept && matchesProject && matchesBank;
     });
-  }, [search, category, department, project]);
+  }, [search, category, department, project, bankFilter]);
 
   const activeFilterLabel = [
     category !== "all" ? category : null,

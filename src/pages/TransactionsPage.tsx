@@ -98,9 +98,8 @@ export default function TransactionsPage() {
             <TableHeader>
               <TableRow className="border-border hover:bg-transparent">
                 <TableHead className="text-muted-foreground font-medium">Date</TableHead>
-                <TableHead className="text-muted-foreground font-medium">Transaction ID</TableHead>
-                <TableHead className="text-muted-foreground font-medium">Recipient</TableHead>
-                <TableHead className="text-muted-foreground font-medium">Payer</TableHead>
+                <TableHead className="text-muted-foreground font-medium">Paid To</TableHead>
+                <TableHead className="text-muted-foreground font-medium">Paid By</TableHead>
                 <TableHead className="text-muted-foreground font-medium">Reason</TableHead>
                 <TableHead className="text-muted-foreground font-medium">Tags</TableHead>
                 <TableHead className="text-muted-foreground font-medium text-right">Amount</TableHead>
@@ -113,7 +112,6 @@ export default function TransactionsPage() {
                   <TableCell className="text-sm">
                     {new Date(txn.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                   </TableCell>
-                  <TableCell className="text-sm font-mono text-muted-foreground">{txn.transactionId}</TableCell>
                   <TableCell className="text-sm font-medium">{txn.recipient}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">{txn.payer}</TableCell>
                   <TableCell className="text-sm text-muted-foreground max-w-[200px] truncate">

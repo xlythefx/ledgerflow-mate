@@ -1,4 +1,3 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
@@ -11,28 +10,24 @@ import ReportsPage from "./pages/ReportsPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
-
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <AuthProvider>
-        <AuthGuard>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<TransactionsPage />} />
-              <Route path="/reconciliation" element={<ReconciliationPage />} />
-              <Route path="/reports" element={<ReportsPage />} />
-              <Route path="/notifications" element={<NotificationsPage />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </AuthGuard>
-      </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
+  <TooltipProvider>
+    <Toaster />
+    <Sonner />
+    <AuthProvider>
+      <AuthGuard>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<TransactionsPage />} />
+            <Route path="/reconciliation" element={<ReconciliationPage />} />
+            <Route path="/reports" element={<ReportsPage />} />
+            <Route path="/notifications" element={<NotificationsPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthGuard>
+    </AuthProvider>
+  </TooltipProvider>
 );
 
 export default App;

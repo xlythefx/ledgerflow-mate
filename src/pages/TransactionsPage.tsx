@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { ReasonBadges } from "@/components/ReasonBadges";
 import { ReasonBadges } from "@/components/ReasonBadges";
 import { ReasonFilter } from "@/components/ReasonFilter";
 import { ExpenseSummaryCard } from "@/components/ExpenseSummaryCard";

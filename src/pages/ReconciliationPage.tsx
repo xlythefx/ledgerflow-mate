@@ -97,9 +97,9 @@ export default function ReconciliationPage() {
     mockCsvHeaders.forEach((h) => (initial[h] = "ignore"));
     // auto-guess
     initial["Transaction Date"] = "date";
-    initial["Details"] = "description";
+    initial["Details"] = "recipient";
     initial["Debit"] = "amount";
-    initial["Running Balance"] = "balance";
+    initial["Running Balance"] = "ignore";
     return initial;
   });
   const [correlated, setCorrelated] = useState<Set<string>>(new Set());

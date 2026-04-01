@@ -1,4 +1,4 @@
-import { LayoutDashboard, ArrowLeftRight, BarChart3, Bell, ExternalLink, Receipt, LogOut } from "lucide-react";
+import { LayoutDashboard, ArrowLeftRight, BarChart3, Bell, ExternalLink, Receipt, FileText, LogOut } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";

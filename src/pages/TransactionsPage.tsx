@@ -2,7 +2,6 @@ import { useState, useMemo } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { ReasonBadges } from "@/components/ReasonBadges";
 import { ReasonFilter } from "@/components/ReasonFilter";
 import { ExpenseSummaryCard } from "@/components/ExpenseSummaryCard";
@@ -16,15 +15,8 @@ import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { mockTransactions } from "@/data/mockData";
 import { parseReason } from "@/data/reasons";
 
-const statusStyles: Record<string, string> = {
-  completed: "bg-success/15 text-success border-success/30",
-  pending: "bg-warning/15 text-warning border-warning/30",
-  failed: "bg-destructive/15 text-destructive border-destructive/30",
-};
-
 export default function TransactionsPage() {
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
   const [category, setCategory] = useState("all");
   const [department, setDepartment] = useState("all");
   const [project, setProject] = useState("all");
@@ -34,16 +26,16 @@ export default function TransactionsPage() {
       const matchesSearch =
         t.recipient.toLowerCase().includes(search.toLowerCase()) ||
         t.transactionId.toLowerCase().includes(search.toLowerCase());
-      const matchesStatus = statusFilter === "all" || t.status === statusFilter;
+      
 
       const { segments } = parseReason(t.reason);
       const matchesCategory = category === "all" || segments[0] === category;
       const matchesDept = department === "all" || segments[1] === department;
       const matchesProject = project === "all" || segments[2] === project;
 
-      return matchesSearch && matchesStatus && matchesCategory && matchesDept && matchesProject;
+      return matchesSearch && matchesCategory && matchesDept && matchesProject;
     });
-  }, [search, statusFilter, category, department, project]);
+  }, [search, category, department, project]);
 
   const activeFilterLabel = [
     category !== "all" ? category : null,
@@ -68,17 +60,6 @@ export default function TransactionsPage() {
               className="pl-9 bg-card border-border"
             />
           </div>
-          <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-[140px] bg-card border-border">
-              <SelectValue placeholder="Status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Status</SelectItem>
-              <SelectItem value="completed">Completed</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="failed">Failed</SelectItem>
-            </SelectContent>
-          </Select>
           <ReasonFilter
             category={category}
             department={department}
@@ -103,7 +84,6 @@ export default function TransactionsPage() {
                 <TableHead className="text-muted-foreground font-medium">Reason</TableHead>
                 <TableHead className="text-muted-foreground font-medium">Tags</TableHead>
                 <TableHead className="text-muted-foreground font-medium text-right">Amount</TableHead>
-                <TableHead className="text-muted-foreground font-medium">Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -122,11 +102,6 @@ export default function TransactionsPage() {
                   </TableCell>
                   <TableCell className="text-sm font-medium text-right tabular-nums">
                     ${txn.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className={`${statusStyles[txn.status]} text-[11px] capitalize`}>
-                      {txn.status}
-                    </Badge>
                   </TableCell>
                 </TableRow>
               ))}

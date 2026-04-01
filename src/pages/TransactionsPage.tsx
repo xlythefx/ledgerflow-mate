@@ -105,11 +105,6 @@ export default function TransactionsPage() {
                   <TableCell className="text-sm font-medium text-right tabular-nums">
                     ${txn.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                   </TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className={`${statusStyles[txn.status]} text-[11px] capitalize`}>
-                      {txn.status}
-                    </Badge>
-                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

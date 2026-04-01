@@ -48,12 +48,13 @@ interface BankLine {
 type WizardStep = "upload" | "preview" | "mapping" | "correlate";
 
 const DB_FIELDS = [
-  { value: "date", label: "Date (Paid Date)" },
-  { value: "description", label: "Description / Recipient" },
+  { value: "date", label: "Date" },
+  { value: "recipient", label: "Paid To" },
+  { value: "payer", label: "Paid By" },
+  { value: "subject", label: "Subject" },
+  { value: "reason", label: "Reason" },
+  { value: "bank", label: "Bank" },
   { value: "amount", label: "Amount" },
-  { value: "reference", label: "Reference / Check #" },
-  { value: "balance", label: "Balance" },
-  { value: "currency", label: "Currency" },
   { value: "ignore", label: "— Ignore —" },
 ] as const;
 
@@ -96,9 +97,9 @@ export default function ReconciliationPage() {
     mockCsvHeaders.forEach((h) => (initial[h] = "ignore"));
     // auto-guess
     initial["Transaction Date"] = "date";
-    initial["Details"] = "description";
+    initial["Details"] = "recipient";
     initial["Debit"] = "amount";
-    initial["Running Balance"] = "balance";
+    initial["Running Balance"] = "ignore";
     return initial;
   });
   const [correlated, setCorrelated] = useState<Set<string>>(new Set());
@@ -120,7 +121,7 @@ export default function ReconciliationPage() {
     setCorrelated(new Set());
   };
 
-  const requiredMapped = ["date", "description", "amount"];
+  const requiredMapped = ["date", "recipient", "amount"];
   const mappedFields = Object.values(columnMapping).filter((v) => v !== "ignore");
   const allRequiredMapped = requiredMapped.every((f) => mappedFields.includes(f));
 

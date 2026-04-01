@@ -28,7 +28,7 @@ export default function TransactionsPage() {
       const matchesSearch =
         t.recipient.toLowerCase().includes(search.toLowerCase()) ||
         t.transactionId.toLowerCase().includes(search.toLowerCase());
-      const matchesStatus = statusFilter === "all" || t.status === statusFilter;
+      
 
       const { segments } = parseReason(t.reason);
       const matchesCategory = category === "all" || segments[0] === category;

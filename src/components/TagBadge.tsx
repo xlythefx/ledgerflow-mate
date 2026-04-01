@@ -26,11 +26,24 @@ const categoryIcons: Record<string, React.ElementType> = {
   client: Briefcase,
 };
 
+const TooltipBadge = forwardRef<HTMLDivElement, { className: string; children: React.ReactNode }>(
+  ({ className, children, ...props }, ref) => (
+    <div ref={ref} {...props}>
+      <Badge variant="outline" className={className}>
+        {children}
+      </Badge>
+    </div>
+  )
+);
+TooltipBadge.displayName = "TooltipBadge";
+
 interface TagBadgeProps {
   tag: TransactionTag;
 }
 
 export function TagBadge({ tag }: TagBadgeProps) {
+  const colorClass = tagColors[tag.category] || "bg-muted text-muted-foreground border-border";
+  const Icon = categoryIcons[tag.category];
   const colorClass = tagColors[tag.category] || "bg-muted text-muted-foreground border-border";
   const Icon = categoryIcons[tag.category];
 

@@ -83,6 +83,7 @@ export default function TransactionsPage() {
                 <TableHead className="text-muted-foreground font-medium">Paid By</TableHead>
                 <TableHead className="text-muted-foreground font-medium">Reason</TableHead>
                 <TableHead className="text-muted-foreground font-medium">Tags</TableHead>
+                <TableHead className="text-muted-foreground font-medium">Bank</TableHead>
                 <TableHead className="text-muted-foreground font-medium text-right">Amount</TableHead>
               </TableRow>
             </TableHeader>

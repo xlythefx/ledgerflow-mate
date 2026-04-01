@@ -44,8 +44,6 @@ interface TagBadgeProps {
 export function TagBadge({ tag }: TagBadgeProps) {
   const colorClass = tagColors[tag.category] || "bg-muted text-muted-foreground border-border";
   const Icon = categoryIcons[tag.category];
-  const colorClass = tagColors[tag.category] || "bg-muted text-muted-foreground border-border";
-  const Icon = categoryIcons[tag.category];
 
   return (
     <Tooltip>

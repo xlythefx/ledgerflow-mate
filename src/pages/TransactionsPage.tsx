@@ -93,36 +93,33 @@ export default function TransactionsPage() {
           <Table>
             <TableHeader>
               <TableRow className="border-border hover:bg-transparent">
-                <TableHead className="text-muted-foreground font-medium">Date</TableHead>
-                <TableHead className="text-muted-foreground font-medium">Paid To</TableHead>
-                <TableHead className="text-muted-foreground font-medium">Paid By</TableHead>
+                <TableHead className="text-muted-foreground font-medium w-[90px]">Date</TableHead>
+                <TableHead className="text-muted-foreground font-medium">Paid To / By</TableHead>
                 <TableHead className="text-muted-foreground font-medium">Subject</TableHead>
                 <TableHead className="text-muted-foreground font-medium">Reason</TableHead>
-                <TableHead className="text-muted-foreground font-medium">Tags</TableHead>
                 <TableHead className="text-muted-foreground font-medium">Bank</TableHead>
-                <TableHead className="text-muted-foreground font-medium text-right">Amount</TableHead>
+                <TableHead className="text-muted-foreground font-medium text-right w-[110px]">Amount</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {filtered.map((txn) => (
                 <TableRow key={txn.id} className="border-border hover:bg-accent/30 transition-colors">
-                  <TableCell className="text-sm">
+                  <TableCell className="text-sm whitespace-nowrap">
                     {new Date(txn.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                   </TableCell>
-                  <TableCell className="text-sm font-medium">{txn.recipient}</TableCell>
-                  <TableCell className="text-sm text-muted-foreground">{txn.payer}</TableCell>
-                  <TableCell className="text-sm text-muted-foreground max-w-[180px] truncate">
+                  <TableCell>
+                    <div className="text-sm font-medium">{txn.recipient}</div>
+                    <div className="text-xs text-muted-foreground">by {txn.payer}</div>
+                  </TableCell>
+                  <TableCell className="text-sm text-muted-foreground max-w-[200px]">
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <span className="cursor-default">{txn.subject}</span>
+                        <span className="cursor-default truncate block">{txn.subject}</span>
                       </TooltipTrigger>
                       <TooltipContent side="bottom" className="max-w-[300px]">
                         <p className="text-xs">{txn.subject}</p>
                       </TooltipContent>
                     </Tooltip>
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground max-w-[200px] truncate">
-                    {txn.reason}
                   </TableCell>
                   <TableCell>
                     <ReasonBadges reason={txn.reason} />

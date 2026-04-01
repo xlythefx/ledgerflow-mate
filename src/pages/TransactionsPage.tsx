@@ -102,6 +102,7 @@ export default function TransactionsPage() {
                 <TableHead className="text-muted-foreground font-medium">Recipient</TableHead>
                 <TableHead className="text-muted-foreground font-medium">Payer</TableHead>
                 <TableHead className="text-muted-foreground font-medium">Reason</TableHead>
+                <TableHead className="text-muted-foreground font-medium">Tags</TableHead>
                 <TableHead className="text-muted-foreground font-medium text-right">Amount</TableHead>
                 <TableHead className="text-muted-foreground font-medium">Status</TableHead>
               </TableRow>
@@ -115,6 +116,9 @@ export default function TransactionsPage() {
                   <TableCell className="text-sm font-mono text-muted-foreground">{txn.transactionId}</TableCell>
                   <TableCell className="text-sm font-medium">{txn.recipient}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">{txn.payer}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground max-w-[200px] truncate">
+                    {txn.reason}
+                  </TableCell>
                   <TableCell>
                     <ReasonBadges reason={txn.reason} />
                   </TableCell>

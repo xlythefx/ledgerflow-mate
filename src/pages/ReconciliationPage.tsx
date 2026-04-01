@@ -2,6 +2,9 @@ import { useState, useCallback } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { ReasonBadges } from "@/components/ReasonBadges";
+import { mockTransactions } from "@/data/mockData";
 import {
   Table,
   TableBody,
@@ -312,11 +315,13 @@ export default function ReconciliationPage() {
               <Table>
                 <TableHeader>
                   <TableRow className="border-border hover:bg-transparent">
-                    <TableHead className="text-muted-foreground font-medium">Date</TableHead>
-                    <TableHead className="text-muted-foreground font-medium">Bank Description</TableHead>
-                    <TableHead className="text-muted-foreground font-medium text-right">Amount</TableHead>
-                    <TableHead className="text-muted-foreground font-medium text-center">Confidence</TableHead>
-                    <TableHead className="text-muted-foreground font-medium text-center">Source</TableHead>
+                    <TableHead className="text-muted-foreground font-medium w-[90px]">Date</TableHead>
+                    <TableHead className="text-muted-foreground font-medium">Paid To / By</TableHead>
+                    <TableHead className="text-muted-foreground font-medium">Subject</TableHead>
+                    <TableHead className="text-muted-foreground font-medium">Reason</TableHead>
+                    <TableHead className="text-muted-foreground font-medium">Bank</TableHead>
+                    <TableHead className="text-muted-foreground font-medium text-right w-[110px]">Amount</TableHead>
+                    <TableHead className="text-muted-foreground font-medium text-center">Match</TableHead>
                     <TableHead className="text-muted-foreground font-medium text-right">Action</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -324,33 +329,67 @@ export default function ReconciliationPage() {
                   {mockBankLines.map((line) => {
                     const isCorrelated = correlated.has(line.id);
                     const hasMatch = !!line.matchId;
+                    const matchedTxn = hasMatch ? mockTransactions.find((t) => t.id === line.matchId) : null;
                     return (
                       <TableRow key={line.id} className={`border-border transition-colors ${isCorrelated ? "opacity-50" : "hover:bg-accent/30"}`}>
-                        <TableCell className="text-sm">
+                        <TableCell className="text-sm whitespace-nowrap">
                           {new Date(line.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                         </TableCell>
-                        <TableCell className="text-sm font-medium">{line.description}</TableCell>
-                        <TableCell className="text-sm font-medium text-right tabular-nums text-destructive">
-                          ${Math.abs(line.amount).toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                        <TableCell>
+                          {matchedTxn ? (
+                            <>
+                              <div className="text-sm font-medium">{matchedTxn.recipient}</div>
+                              <div className="text-xs text-muted-foreground">by {matchedTxn.payer}</div>
+                            </>
+                          ) : (
+                            <div className="text-sm font-medium">{line.description}</div>
+                          )}
                         </TableCell>
-                        <TableCell className="text-center">
-                          {hasMatch ? (
-                            <span className={`text-sm font-medium ${
-                              line.matchConfidence! >= 95 ? "text-success" : line.matchConfidence! >= 85 ? "text-warning" : "text-muted-foreground"
-                            }`}>
-                              {line.matchConfidence}%
-                            </span>
+                        <TableCell className="text-sm text-muted-foreground max-w-[200px]">
+                          {matchedTxn ? (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="cursor-default truncate block">{matchedTxn.subject}</span>
+                              </TooltipTrigger>
+                              <TooltipContent side="bottom" className="max-w-[300px]">
+                                <p className="text-xs">{matchedTxn.subject}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {matchedTxn ? (
+                            <ReasonBadges reason={matchedTxn.reason} />
                           ) : (
                             <span className="text-sm text-muted-foreground">—</span>
                           )}
                         </TableCell>
+                        <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
+                          {matchedTxn?.bank ?? "—"}
+                        </TableCell>
+                        <TableCell className="text-sm font-medium text-right tabular-nums">
+                          ${Math.abs(line.amount).toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                        </TableCell>
                         <TableCell className="text-center">
-                          {line.aiSuggested && (
-                            <Badge variant="outline" className="bg-info/10 text-info border-info/30 text-[10px]">
-                              <Sparkles className="h-2.5 w-2.5 mr-1" />
-                              AI
-                            </Badge>
-                          )}
+                          <div className="flex items-center justify-center gap-1.5">
+                            {hasMatch ? (
+                              <span className={`text-sm font-medium ${
+                                line.matchConfidence! >= 95 ? "text-success" : line.matchConfidence! >= 85 ? "text-warning" : "text-muted-foreground"
+                              }`}>
+                                {line.matchConfidence}%
+                              </span>
+                            ) : (
+                              <span className="text-sm text-muted-foreground">—</span>
+                            )}
+                            {line.aiSuggested && (
+                              <Badge variant="outline" className="bg-info/10 text-info border-info/30 text-[10px]">
+                                <Sparkles className="h-2.5 w-2.5 mr-1" />
+                                AI
+                              </Badge>
+                            )}
+                          </div>
                         </TableCell>
                         <TableCell className="text-right">
                           {isCorrelated ? (

@@ -12,7 +12,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Search, ChevronLeft, ChevronRight } from "lucide-react";
-import { mockTransactions } from "@/data/mockData";
+import { mockTransactions, BANK_OPTIONS } from "@/data/mockData";
 import { parseReason } from "@/data/reasons";
 
 export default function TransactionsPage() {

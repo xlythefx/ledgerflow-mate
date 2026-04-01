@@ -3,6 +3,7 @@ import { DashboardLayout } from "@/components/DashboardLayout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ReasonBadges } from "@/components/ReasonBadges";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { ReasonFilter } from "@/components/ReasonFilter";
 import { ExpenseSummaryCard } from "@/components/ExpenseSummaryCard";
 import {

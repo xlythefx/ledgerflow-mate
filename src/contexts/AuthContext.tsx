@@ -32,6 +32,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .catch((err) => {
         if (err?.status === 401) {
           window.location.href = LOGIN_URL;
+        } else {
+          // In development/preview without a backend, fall back to a mock user
+          setUser({ id: 0, name: "Anastasia", email: "anastasia@company.com", avatar_url: null });
         }
       })
       .finally(() => setLoading(false));

@@ -1,76 +1,121 @@
+import { useState, useMemo } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { ReasonFilter } from "@/components/ReasonFilter";
 import { DollarSign, TrendingDown, BarChart3, Download } from "lucide-react";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, PieChart, Pie, Cell,
 } from "recharts";
+import { mockTransactions } from "@/data/mockData";
+import { parseReason } from "@/data/reasons";
 
-const monthlyData = [
-  { month: "Oct", amount: 42000 },
-  { month: "Nov", amount: 38500 },
-  { month: "Dec", amount: 51200 },
-  { month: "Jan", amount: 44800 },
-  { month: "Feb", amount: 39600 },
-  { month: "Mar", amount: 47200 },
-];
-
-const categoryData = [
-  { name: "Managers", value: 12500, color: "hsl(160, 84%, 39%)" },
-  { name: "Engineering", value: 9800, color: "hsl(210, 100%, 52%)" },
-  { name: "Tools & Infra", value: 5200, color: "hsl(280, 65%, 60%)" },
-  { name: "Content", value: 4400, color: "hsl(38, 92%, 50%)" },
-  { name: "Operations", value: 3800, color: "hsl(340, 75%, 55%)" },
-  { name: "Admin", value: 2100, color: "hsl(200, 50%, 50%)" },
-];
-
-const tagReport = [
-  { tag: "Managers", total: 12500, count: 4 },
-  { tag: "Link Building", total: 8900, count: 6 },
-  { tag: "Engineering", total: 9800, count: 3 },
-  { tag: "IP Services", total: 5200, count: 8 },
-  { tag: "Content", total: 4400, count: 5 },
-  { tag: "ClientCo", total: 11300, count: 7 },
-  { tag: "MegaCorp", total: 3200, count: 2 },
+const TAG_COLORS = [
+  "hsl(160, 84%, 39%)", "hsl(210, 100%, 52%)", "hsl(280, 65%, 60%)",
+  "hsl(38, 92%, 50%)", "hsl(340, 75%, 55%)", "hsl(200, 50%, 50%)",
+  "hsl(150, 60%, 45%)", "hsl(25, 85%, 55%)", "hsl(260, 55%, 50%)",
+  "hsl(10, 80%, 55%)",
 ];
 
 export default function ReportsPage() {
+  const [category, setCategory] = useState("all");
+  const [department, setDepartment] = useState("all");
+  const [project, setProject] = useState("all");
+
+  const filtered = useMemo(() => {
+    return mockTransactions.filter((txn) => {
+      const { segments } = parseReason(txn.reason);
+      if (category !== "all" && segments[0] !== category) return false;
+      if (department !== "all" && segments[1] !== department) return false;
+      if (project !== "all" && segments[2] !== project) return false;
+      return true;
+    });
+  }, [category, department, project]);
+
+  // Expenses only (exclude Income)
+  const expenses = useMemo(
+    () => filtered.filter((t) => !t.reason.startsWith("Income")),
+    [filtered]
+  );
+
+  const totalExpenses = useMemo(
+    () => expenses.reduce((s, t) => s + t.amount, 0),
+    [expenses]
+  );
+
+  // By primary tag (Level 1)
+  const byTag = useMemo(() => {
+    const map: Record<string, { total: number; count: number }> = {};
+    for (const txn of expenses) {
+      const { segments } = parseReason(txn.reason);
+      const tag = segments[0] || "Other";
+      if (!map[tag]) map[tag] = { total: 0, count: 0 };
+      map[tag].total += txn.amount;
+      map[tag].count += 1;
+    }
+    return Object.entries(map)
+      .map(([tag, data]) => ({ tag, ...data }))
+      .sort((a, b) => b.total - a.total);
+  }, [expenses]);
+
+  // Pie chart data from byTag
+  const pieData = useMemo(
+    () => byTag.map((item, i) => ({
+      name: item.tag,
+      value: Math.round(item.total * 100) / 100,
+      color: TAG_COLORS[i % TAG_COLORS.length],
+    })),
+    [byTag]
+  );
+
+  // Monthly aggregation
+  const monthlyData = useMemo(() => {
+    const map: Record<string, number> = {};
+    for (const txn of expenses) {
+      const month = new Date(txn.date).toLocaleString("en", { month: "short" });
+      map[month] = (map[month] || 0) + txn.amount;
+    }
+    return Object.entries(map).map(([month, amount]) => ({ month, amount: Math.round(amount * 100) / 100 }));
+  }, [expenses]);
+
+  const maxTag = byTag[0]?.total ?? 1;
+  const daysInMonth = 31;
+  const burnRate = totalExpenses / daysInMonth;
+
+  const activeFilter = [
+    category !== "all" ? category : null,
+    department !== "all" ? department : null,
+    project !== "all" ? project : null,
+  ].filter(Boolean).join(" › ");
+
   return (
     <DashboardLayout title="Reports">
       <div className="space-y-6">
         {/* Controls */}
-        <div className="flex items-center justify-between">
-          <Select defaultValue="march">
-            <SelectTrigger className="w-[180px] bg-card border-border">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="march">March 2025</SelectItem>
-              <SelectItem value="february">February 2025</SelectItem>
-              <SelectItem value="january">January 2025</SelectItem>
-            </SelectContent>
-          </Select>
+        <div className="flex items-center justify-between flex-wrap gap-3">
+          <div className="flex items-center gap-2 flex-wrap">
+            <ReasonFilter
+              category={category}
+              department={department}
+              project={project}
+              onCategoryChange={setCategory}
+              onDepartmentChange={setDepartment}
+              onProjectChange={setProject}
+            />
+          </div>
           <Button variant="outline" className="border-border">
             <Download className="h-4 w-4 mr-2" />
             Export to Excel
           </Button>
         </div>
+
+        {activeFilter && (
+          <p className="text-xs text-muted-foreground">
+            Filtered: <span className="font-medium text-foreground">{activeFilter}</span>
+            {" "}— {expenses.length} transaction{expenses.length !== 1 ? "s" : ""}
+          </p>
+        )}
 
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -79,8 +124,9 @@ export default function ReportsPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">Total Expenses</p>
-                  <p className="text-2xl font-bold mt-1 tabular-nums">$47,172.51</p>
-                  <p className="text-xs text-destructive mt-1">+19.1% vs last month</p>
+                  <p className="text-2xl font-bold mt-1 tabular-nums">
+                    ${totalExpenses.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </p>
                 </div>
                 <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
                   <DollarSign className="h-5 w-5 text-primary" />
@@ -93,8 +139,9 @@ export default function ReportsPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">Burn Rate</p>
-                  <p className="text-2xl font-bold mt-1 tabular-nums">$1,521/day</p>
-                  <p className="text-xs text-success mt-1">-3.2% vs last month</p>
+                  <p className="text-2xl font-bold mt-1 tabular-nums">
+                    ${Math.round(burnRate).toLocaleString()}/day
+                  </p>
                 </div>
                 <div className="h-10 w-10 rounded-lg bg-warning/10 flex items-center justify-center">
                   <TrendingDown className="h-5 w-5 text-warning" />
@@ -107,8 +154,8 @@ export default function ReportsPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-muted-foreground">Categories</p>
-                  <p className="text-2xl font-bold mt-1 tabular-nums">6</p>
-                  <p className="text-xs text-muted-foreground mt-1">Active this month</p>
+                  <p className="text-2xl font-bold mt-1 tabular-nums">{byTag.length}</p>
+                  <p className="text-xs text-muted-foreground mt-1">Active tags</p>
                 </div>
                 <div className="h-10 w-10 rounded-lg bg-info/10 flex items-center justify-center">
                   <BarChart3 className="h-5 w-5 text-info" />
@@ -142,14 +189,14 @@ export default function ReportsPage() {
 
           <Card className="glass-card">
             <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">By Category</CardTitle>
+              <CardTitle className="text-sm font-medium text-muted-foreground">By Tag</CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
               <div className="flex items-center gap-4">
                 <ResponsiveContainer width="50%" height={260}>
                   <PieChart>
-                    <Pie data={categoryData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90} innerRadius={55} strokeWidth={0}>
-                      {categoryData.map((entry, i) => (
+                    <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={90} innerRadius={55} strokeWidth={0}>
+                      {pieData.map((entry, i) => (
                         <Cell key={i} fill={entry.color} />
                       ))}
                     </Pie>
@@ -160,7 +207,7 @@ export default function ReportsPage() {
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="space-y-2 flex-1">
-                  {categoryData.map((cat) => (
+                  {pieData.map((cat) => (
                     <div key={cat.name} className="flex items-center justify-between text-sm">
                       <div className="flex items-center gap-2">
                         <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: cat.color }} />
@@ -182,7 +229,7 @@ export default function ReportsPage() {
           </CardHeader>
           <CardContent className="pt-0">
             <div className="space-y-2">
-              {tagReport.map((row) => (
+              {byTag.map((row) => (
                 <div key={row.tag} className="flex items-center justify-between py-2 border-b border-border last:border-0">
                   <div>
                     <span className="text-sm font-medium">{row.tag}</span>
@@ -192,7 +239,7 @@ export default function ReportsPage() {
                     <div className="w-32 h-1.5 bg-secondary rounded-full overflow-hidden">
                       <div
                         className="h-full bg-primary rounded-full"
-                        style={{ width: `${(row.total / 13000) * 100}%` }}
+                        style={{ width: `${(row.total / maxTag) * 100}%` }}
                       />
                     </div>
                     <span className="text-sm font-medium tabular-nums w-20 text-right">

@@ -49,12 +49,13 @@ type WizardStep = "upload" | "preview" | "mapping" | "correlate";
 
 const DB_FIELDS = [
   { value: "date", label: "Date" },
-  { value: "recipient", label: "Paid To" },
-  { value: "payer", label: "Paid By" },
   { value: "subject", label: "Subject" },
   { value: "reason", label: "Reason" },
   { value: "bank", label: "Bank" },
   { value: "amount", label: "Amount" },
+  { value: "payer", label: "Paid By" },
+  { value: "recipient", label: "Paid To" },
+  { value: "invoice_link", label: "Invoice Link" },
   { value: "ignore", label: "— Ignore —" },
 ] as const;
 

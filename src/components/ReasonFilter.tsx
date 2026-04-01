@@ -55,7 +55,7 @@ export function ReasonFilter({
       <Select value={category} onValueChange={handleCategoryChange}>
         <SelectTrigger className="w-[160px] bg-card border-border">
           <Filter className="h-3.5 w-3.5 mr-1" />
-          <SelectValue placeholder="Category" />
+          <SelectValue placeholder="Reason" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">All Reasons</SelectItem>

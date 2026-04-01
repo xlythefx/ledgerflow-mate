@@ -35,9 +35,9 @@ export default function TransactionsPage() {
       const matchesDept = department === "all" || segments[1] === department;
       const matchesProject = project === "all" || segments[2] === project;
 
-      return matchesSearch && matchesStatus && matchesCategory && matchesDept && matchesProject;
+      return matchesSearch && matchesCategory && matchesDept && matchesProject;
     });
-  }, [search, statusFilter, category, department, project]);
+  }, [search, category, department, project]);
 
   const activeFilterLabel = [
     category !== "all" ? category : null,

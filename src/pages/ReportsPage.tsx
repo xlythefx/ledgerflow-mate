@@ -138,7 +138,7 @@ export default function ReportsPage() {
             <CardContent className="p-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-muted-foreground">Burn Rate</p>
+                  <p className="text-sm text-muted-foreground">Spend Rate</p>
                   <p className="text-2xl font-bold mt-1 tabular-nums">
                     ${Math.round(burnRate).toLocaleString()}/day
                   </p>

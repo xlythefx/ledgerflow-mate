@@ -3,6 +3,7 @@ import { DashboardLayout } from "@/components/DashboardLayout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ReasonBadges } from "@/components/ReasonBadges";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { ReasonFilter } from "@/components/ReasonFilter";
 import { ExpenseSummaryCard } from "@/components/ExpenseSummaryCard";
 import {
@@ -110,7 +111,16 @@ export default function TransactionsPage() {
                   </TableCell>
                   <TableCell className="text-sm font-medium">{txn.recipient}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">{txn.payer}</TableCell>
-                  <TableCell className="text-sm text-muted-foreground max-w-[180px] truncate">{txn.subject}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground max-w-[180px] truncate">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <span className="cursor-default">{txn.subject}</span>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="max-w-[300px]">
+                        <p className="text-xs">{txn.subject}</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TableCell>
                   <TableCell className="text-sm text-muted-foreground max-w-[200px] truncate">
                     {txn.reason}
                   </TableCell>

@@ -71,6 +71,17 @@ export default function TransactionsPage() {
             onDepartmentChange={setDepartment}
             onProjectChange={setProject}
           />
+          <Select value={bankFilter} onValueChange={setBankFilter}>
+            <SelectTrigger className="w-[170px] bg-card border-border">
+              <SelectValue placeholder="Bank" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Banks</SelectItem>
+              {BANK_OPTIONS.map((b) => (
+                <SelectItem key={b} value={b}>{b}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <div className="ml-auto text-sm text-muted-foreground">
             {filtered.length} transactions
           </div>

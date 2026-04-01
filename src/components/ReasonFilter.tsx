@@ -58,7 +58,7 @@ export function ReasonFilter({
           <SelectValue placeholder="Category" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All Categories</SelectItem>
+          <SelectItem value="all">All Reasons</SelectItem>
           {hierarchy.level1.map((l) => (
             <SelectItem key={l} value={l}>{l}</SelectItem>
           ))}

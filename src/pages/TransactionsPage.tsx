@@ -12,7 +12,7 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
 import { Search, ChevronLeft, ChevronRight } from "lucide-react";
-import { mockTransactions } from "@/data/mockData";
+import { mockTransactions, BANK_OPTIONS } from "@/data/mockData";
 import { parseReason } from "@/data/reasons";
 
 export default function TransactionsPage() {
@@ -20,6 +20,7 @@ export default function TransactionsPage() {
   const [category, setCategory] = useState("all");
   const [department, setDepartment] = useState("all");
   const [project, setProject] = useState("all");
+  const [bankFilter, setBankFilter] = useState("all");
 
   const filtered = useMemo(() => {
     return mockTransactions.filter((t) => {
@@ -33,9 +34,11 @@ export default function TransactionsPage() {
       const matchesDept = department === "all" || segments[1] === department;
       const matchesProject = project === "all" || segments[2] === project;
 
-      return matchesSearch && matchesCategory && matchesDept && matchesProject;
+      const matchesBank = bankFilter === "all" || t.bank === bankFilter;
+
+      return matchesSearch && matchesCategory && matchesDept && matchesProject && matchesBank;
     });
-  }, [search, category, department, project]);
+  }, [search, category, department, project, bankFilter]);
 
   const activeFilterLabel = [
     category !== "all" ? category : null,
@@ -68,6 +71,17 @@ export default function TransactionsPage() {
             onDepartmentChange={setDepartment}
             onProjectChange={setProject}
           />
+          <Select value={bankFilter} onValueChange={setBankFilter}>
+            <SelectTrigger className="w-[170px] bg-card border-border">
+              <SelectValue placeholder="Bank" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Banks</SelectItem>
+              {BANK_OPTIONS.map((b) => (
+                <SelectItem key={b} value={b}>{b}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <div className="ml-auto text-sm text-muted-foreground">
             {filtered.length} transactions
           </div>

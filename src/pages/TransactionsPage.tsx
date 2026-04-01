@@ -20,6 +20,7 @@ export default function TransactionsPage() {
   const [category, setCategory] = useState("all");
   const [department, setDepartment] = useState("all");
   const [project, setProject] = useState("all");
+  const [bankFilter, setBankFilter] = useState("all");
 
   const filtered = useMemo(() => {
     return mockTransactions.filter((t) => {

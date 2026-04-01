@@ -1,6 +1,7 @@
 import { toast } from "sonner";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api/v1";
+const LOGIN_URL = import.meta.env.VITE_LOGIN_URL || "https://app.company.com/login";
 
 interface ApiOptions extends RequestInit {
   params?: Record<string, string | number | boolean | undefined>;

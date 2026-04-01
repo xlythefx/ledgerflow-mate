@@ -154,7 +154,7 @@ export default function ReportsPage() {
                       ))}
                     </Pie>
                     <Tooltip
-                      contentStyle={{ backgroundColor: "hsl(222, 47%, 10%)", border: "1px solid hsl(217, 33%, 17%)", borderRadius: "8px", color: "hsl(210, 40%, 96%)" }}
+                      contentStyle={{ backgroundColor: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: "8px", color: "hsl(var(--popover-foreground))" }}
                       formatter={(value: number) => [`$${value.toLocaleString()}`, ""]}
                     />
                   </PieChart>

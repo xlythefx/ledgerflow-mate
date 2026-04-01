@@ -8,6 +8,7 @@ import TransactionsPage from "./pages/TransactionsPage";
 import ReconciliationPage from "./pages/ReconciliationPage";
 import ReportsPage from "./pages/ReportsPage";
 import NotificationsPage from "./pages/NotificationsPage";
+import InvoicesPage from "./pages/InvoicesPage";
 import NotFound from "./pages/NotFound";
 
 const App = () => (

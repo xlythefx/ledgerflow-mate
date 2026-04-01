@@ -23,6 +23,7 @@ export interface Transaction {
   status: "completed" | "pending" | "failed";
   reason: string;
   bank: BankOption;
+  subject: string;
 }
 
 export const mockTransactions: Transaction[] = [

@@ -277,7 +277,7 @@ export default function ReconciliationPage() {
 
             {!allRequiredMapped && (
               <p className="text-xs text-destructive">
-                Please map Date, Description, and Amount before proceeding.
+                Please map Date, Paid To, and Amount before proceeding.
               </p>
             )}
 

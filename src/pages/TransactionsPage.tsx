@@ -96,6 +96,7 @@ export default function TransactionsPage() {
                   </TableCell>
                   <TableCell className="text-sm font-medium">{txn.recipient}</TableCell>
                   <TableCell className="text-sm text-muted-foreground">{txn.payer}</TableCell>
+                  <TableCell className="text-sm text-muted-foreground max-w-[180px] truncate">{txn.subject}</TableCell>
                   <TableCell className="text-sm text-muted-foreground max-w-[200px] truncate">
                     {txn.reason}
                   </TableCell>

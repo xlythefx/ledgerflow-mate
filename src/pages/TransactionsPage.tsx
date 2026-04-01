@@ -83,6 +83,7 @@ export default function TransactionsPage() {
                 <TableHead className="text-muted-foreground font-medium">Paid By</TableHead>
                 <TableHead className="text-muted-foreground font-medium">Reason</TableHead>
                 <TableHead className="text-muted-foreground font-medium">Tags</TableHead>
+                <TableHead className="text-muted-foreground font-medium">Bank</TableHead>
                 <TableHead className="text-muted-foreground font-medium text-right">Amount</TableHead>
               </TableRow>
             </TableHeader>
@@ -100,6 +101,7 @@ export default function TransactionsPage() {
                   <TableCell>
                     <ReasonBadges reason={txn.reason} />
                   </TableCell>
+                  <TableCell className="text-sm text-muted-foreground whitespace-nowrap">{txn.bank}</TableCell>
                   <TableCell className="text-sm font-medium text-right tabular-nums">
                     ${txn.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                   </TableCell>

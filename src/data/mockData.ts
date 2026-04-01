@@ -6,7 +6,7 @@ export interface Transaction {
   payer: string;
   amount: number;
   status: "completed" | "pending" | "failed";
-  tags: { label: string; category: string; subItems?: string[] }[];
+  tags: { label: string; category: string; subItems?: string[]; employees?: string[] }[];
 }
 
 export const mockTransactions: Transaction[] = [
@@ -15,9 +15,9 @@ export const mockTransactions: Transaction[] = [
     recipient: "John Smith - SEO Manager", payer: "Anastasia", amount: 4500,
     status: "completed",
     tags: [
-      { label: "Managers", category: "department", subItems: ["SEO Team", "Content Ops"] },
-      { label: "Link Building", category: "project", subItems: ["Outreach Campaign Q1"] },
-      { label: "ClientCo", category: "client", subItems: ["Retainer Contract"] },
+      { label: "Managers", category: "department", subItems: ["SEO Team", "Content Ops"], employees: ["John Smith", "Sarah Kim", "Alex Turner"] },
+      { label: "Link Building", category: "project", subItems: ["Outreach Campaign Q1"], employees: ["John Smith", "Nina Patel"] },
+      { label: "ClientCo", category: "client", subItems: ["Retainer Contract"], employees: ["John Smith"] },
     ],
   },
   {
@@ -25,8 +25,8 @@ export const mockTransactions: Transaction[] = [
     recipient: "AWS Cloud Services", payer: "Anastasia", amount: 1234.56,
     status: "completed",
     tags: [
-      { label: "Infrastructure", category: "department", subItems: ["Cloud", "DevOps"] },
-      { label: "IP Services", category: "project", subItems: ["Proxy Network", "Server Fleet"] },
+      { label: "Infrastructure", category: "department", subItems: ["Cloud", "DevOps"], employees: ["David Chen", "Mike Ross"] },
+      { label: "IP Services", category: "project", subItems: ["Proxy Network", "Server Fleet"], employees: ["David Chen"] },
     ],
   },
   {
@@ -34,8 +34,8 @@ export const mockTransactions: Transaction[] = [
     recipient: "Maria Lopez - Content Writer", payer: "Anastasia", amount: 2200,
     status: "pending",
     tags: [
-      { label: "Content", category: "department", subItems: ["Writers", "Editors"] },
-      { label: "Blog Refresh", category: "project" },
+      { label: "Content", category: "department", subItems: ["Writers", "Editors"], employees: ["Maria Lopez", "Tom Briggs", "Anya Shah"] },
+      { label: "Blog Refresh", category: "project", employees: ["Maria Lopez"] },
       { label: "InternalOps", category: "client" },
     ],
   },
@@ -44,8 +44,8 @@ export const mockTransactions: Transaction[] = [
     recipient: "Semrush Subscription", payer: "Anastasia", amount: 449.95,
     status: "completed",
     tags: [
-      { label: "Tools", category: "department", subItems: ["SEO Tools", "Analytics"] },
-      { label: "Link Building", category: "project" },
+      { label: "Tools", category: "department", subItems: ["SEO Tools", "Analytics"], employees: ["John Smith", "Sarah Kim"] },
+      { label: "Link Building", category: "project", employees: ["John Smith", "Nina Patel"] },
     ],
   },
   {
@@ -53,9 +53,9 @@ export const mockTransactions: Transaction[] = [
     recipient: "David Chen - Developer", payer: "Anastasia", amount: 6800,
     status: "completed",
     tags: [
-      { label: "Engineering", category: "department", subItems: ["Frontend", "Backend"] },
-      { label: "Dashboard v2", category: "project", subItems: ["Finance Module", "Reports"] },
-      { label: "ClientCo", category: "client" },
+      { label: "Engineering", category: "department", subItems: ["Frontend", "Backend"], employees: ["David Chen", "Lisa Wang", "Raj Gupta"] },
+      { label: "Dashboard v2", category: "project", subItems: ["Finance Module", "Reports"], employees: ["David Chen", "Lisa Wang"] },
+      { label: "ClientCo", category: "client", employees: ["David Chen"] },
     ],
   },
   {
@@ -63,7 +63,7 @@ export const mockTransactions: Transaction[] = [
     recipient: "WeWork Office Space", payer: "Anastasia", amount: 3200,
     status: "completed",
     tags: [
-      { label: "Operations", category: "department", subItems: ["Facilities"] },
+      { label: "Operations", category: "department", subItems: ["Facilities"], employees: ["Anastasia", "HR Team"] },
     ],
   },
   {
@@ -71,9 +71,9 @@ export const mockTransactions: Transaction[] = [
     recipient: "Elena Petrova - VA", payer: "Anastasia", amount: 1500,
     status: "failed",
     tags: [
-      { label: "Admin", category: "department" },
-      { label: "Outreach", category: "project", subItems: ["Email Campaigns"] },
-      { label: "MegaCorp", category: "client" },
+      { label: "Admin", category: "department", employees: ["Elena Petrova"] },
+      { label: "Outreach", category: "project", subItems: ["Email Campaigns"], employees: ["Elena Petrova", "Nina Patel"] },
+      { label: "MegaCorp", category: "client", employees: ["Elena Petrova"] },
     ],
   },
   {
@@ -81,7 +81,7 @@ export const mockTransactions: Transaction[] = [
     recipient: "Google Workspace", payer: "Anastasia", amount: 288,
     status: "completed",
     tags: [
-      { label: "Tools", category: "department" },
+      { label: "Tools", category: "department", employees: ["All Staff"] },
       { label: "InternalOps", category: "client" },
     ],
   },

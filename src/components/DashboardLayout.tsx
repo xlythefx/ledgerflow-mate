@@ -1,6 +1,7 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { SyncIndicator } from "@/components/SyncIndicator";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -18,7 +19,10 @@ export function DashboardLayout({ children, title }: DashboardLayoutProps) {
               <SidebarTrigger />
               <h1 className="text-lg font-semibold">{title}</h1>
             </div>
-            <SyncIndicator />
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <SyncIndicator />
+            </div>
           </header>
           <main className="flex-1 p-6 overflow-auto">
             {children}

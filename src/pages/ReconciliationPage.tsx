@@ -121,7 +121,7 @@ export default function ReconciliationPage() {
     setCorrelated(new Set());
   };
 
-  const requiredMapped = ["date", "description", "amount"];
+  const requiredMapped = ["date", "recipient", "amount"];
   const mappedFields = Object.values(columnMapping).filter((v) => v !== "ignore");
   const allRequiredMapped = requiredMapped.every((f) => mappedFields.includes(f));
 

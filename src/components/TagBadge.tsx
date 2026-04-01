@@ -1,3 +1,4 @@
+import { forwardRef } from "react";
 import { Badge } from "@/components/ui/badge";
 import {
   Tooltip,
@@ -25,6 +26,17 @@ const categoryIcons: Record<string, React.ElementType> = {
   client: Briefcase,
 };
 
+const TooltipBadge = forwardRef<HTMLDivElement, { className: string; children: React.ReactNode }>(
+  ({ className, children, ...props }, ref) => (
+    <div ref={ref} {...props}>
+      <Badge variant="outline" className={className}>
+        {children}
+      </Badge>
+    </div>
+  )
+);
+TooltipBadge.displayName = "TooltipBadge";
+
 interface TagBadgeProps {
   tag: TransactionTag;
 }
@@ -35,13 +47,10 @@ export function TagBadge({ tag }: TagBadgeProps) {
 
   return (
     <Tooltip>
-      <TooltipTrigger>
-        <Badge
-          variant="outline"
-          className={`${colorClass} text-[11px] font-medium cursor-pointer transition-colors`}
-        >
+      <TooltipTrigger asChild>
+        <TooltipBadge className={`${colorClass} text-[11px] font-medium cursor-pointer transition-colors`}>
           {tag.label}
-        </Badge>
+        </TooltipBadge>
       </TooltipTrigger>
       <TooltipContent side="bottom" className="max-w-[240px] p-3">
         <div className="flex items-center gap-1.5 mb-2">

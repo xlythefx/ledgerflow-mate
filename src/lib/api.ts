@@ -1,6 +1,7 @@
 import { toast } from "sonner";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api/v1";
+const LOGIN_URL = import.meta.env.VITE_LOGIN_URL || "https://app.company.com/login";
 
 interface ApiOptions extends RequestInit {
   params?: Record<string, string | number | boolean | undefined>;
@@ -74,8 +75,8 @@ class ApiClient {
       };
 
       if (response.status === 401) {
-        this.clearToken();
-        toast.error("Session expired. Please log in again.");
+        window.location.href = LOGIN_URL;
+        return;
       } else if (response.status === 403) {
         toast.error("You don't have permission to perform this action.");
       } else if (response.status === 422) {
@@ -100,6 +101,7 @@ class ApiClient {
     for (let attempt = 0; attempt <= retries; attempt++) {
       const response = await fetch(url, {
         ...options,
+        credentials: "include",
         headers: { ...this.defaultHeaders, ...(options.headers || {}) },
       });
 

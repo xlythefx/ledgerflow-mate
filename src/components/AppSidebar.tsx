@@ -1,6 +1,9 @@
-import { LayoutDashboard, ArrowLeftRight, BarChart3, Bell, ExternalLink, Receipt } from "lucide-react";
+import { LayoutDashboard, ArrowLeftRight, BarChart3, Bell, ExternalLink, Receipt, LogOut } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Sidebar,
   SidebarContent,
@@ -14,6 +17,8 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
+const MAIN_APP_URL = import.meta.env.VITE_MAIN_APP_URL || "https://app.company.com";
+
 const navItems = [
   { title: "Transactions", url: "/", icon: Receipt },
   { title: "Reconciliation", url: "/reconciliation", icon: ArrowLeftRight },
@@ -25,6 +30,16 @@ export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
   const location = useLocation();
+  const { user, loading } = useAuth();
+
+  const initials = user?.name
+    ? user.name
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : "?";
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border">
@@ -73,12 +88,39 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="p-4">
+
+      <SidebarFooter className="p-3 space-y-3">
+        {/* User Profile */}
+        <div className="flex items-center gap-2.5 px-1">
+          {loading ? (
+            <>
+              <Skeleton className="h-8 w-8 rounded-full shrink-0" />
+              {!collapsed && <Skeleton className="h-4 w-24" />}
+            </>
+          ) : user ? (
+            <>
+              <Avatar className="h-8 w-8 shrink-0">
+                <AvatarImage src={user.avatar_url || undefined} alt={user.name} />
+                <AvatarFallback className="bg-primary/15 text-primary text-xs font-medium">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+              {!collapsed && (
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-medium truncate text-foreground">{user.name}</p>
+                  <p className="text-[11px] text-muted-foreground truncate">{user.email}</p>
+                </div>
+              )}
+            </>
+          ) : null}
+        </div>
+
+        {/* Return to Main App */}
         <a
-          href="#"
-          className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          href={MAIN_APP_URL}
+          className="flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors px-1"
         >
-          <ExternalLink className="h-3.5 w-3.5" />
+          <ExternalLink className="h-3.5 w-3.5 shrink-0" />
           {!collapsed && <span>Return to Main App</span>}
         </a>
       </SidebarFooter>

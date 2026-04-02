@@ -13,8 +13,12 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Search, ChevronLeft, ChevronRight } from "lucide-react";
-import { mockTransactions, BANK_OPTIONS } from "@/data/mockData";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+import { Search, ChevronLeft, ChevronRight, Calendar, User, Building2, FileText, CreditCard, DollarSign } from "lucide-react";
+import { mockTransactions, BANK_OPTIONS, type Transaction } from "@/data/mockData";
 import { parseReason } from "@/data/reasons";
 
 export default function TransactionsPage() {
@@ -23,13 +27,13 @@ export default function TransactionsPage() {
   const [department, setDepartment] = useState("all");
   const [project, setProject] = useState("all");
   const [bankFilter, setBankFilter] = useState("all");
+  const [selectedTxn, setSelectedTxn] = useState<Transaction | null>(null);
 
   const filtered = useMemo(() => {
     return mockTransactions.filter((t) => {
       const matchesSearch =
         t.recipient.toLowerCase().includes(search.toLowerCase()) ||
         t.transactionId.toLowerCase().includes(search.toLowerCase());
-      
 
       const { segments } = parseReason(t.reason);
       const matchesCategory = category === "all" || segments[0] === category;
@@ -51,10 +55,8 @@ export default function TransactionsPage() {
   return (
     <DashboardLayout title="Transactions">
       <div className="space-y-4">
-        {/* KPI Cards */}
         <ExpenseSummaryCard transactions={filtered} activeFilter={activeFilterLabel} />
 
-        {/* Filters */}
         <div className="flex items-center gap-3 flex-wrap">
           <div className="relative flex-1 min-w-[240px] max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -89,7 +91,6 @@ export default function TransactionsPage() {
           </div>
         </div>
 
-        {/* Table */}
         <div className="glass-card overflow-hidden">
           <Table>
             <TableHeader>
@@ -104,7 +105,11 @@ export default function TransactionsPage() {
             </TableHeader>
             <TableBody>
               {filtered.map((txn) => (
-                <TableRow key={txn.id} className="border-border hover:bg-accent/30 transition-colors">
+                <TableRow
+                  key={txn.id}
+                  className="border-border hover:bg-accent/30 transition-colors cursor-pointer"
+                  onClick={() => setSelectedTxn(txn)}
+                >
                   <TableCell className="text-sm whitespace-nowrap">
                     {new Date(txn.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                   </TableCell>
@@ -143,7 +148,6 @@ export default function TransactionsPage() {
           </Table>
         </div>
 
-        {/* Pagination */}
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">Page 1 of 1</p>
           <div className="flex gap-1">
@@ -156,6 +160,62 @@ export default function TransactionsPage() {
           </div>
         </div>
       </div>
+
+      {/* Transaction Detail Modal */}
+      <Dialog open={!!selectedTxn} onOpenChange={(open) => !open && setSelectedTxn(null)}>
+        <DialogContent className="sm:max-w-[500px]">
+          {selectedTxn && (() => {
+            const isIncome = selectedTxn.reason.startsWith("Income");
+            return (
+              <>
+                <DialogHeader>
+                  <DialogTitle className="text-lg">Transaction Details</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4 pt-2">
+                  {/* Amount highlight */}
+                  <div className={`flex items-center justify-center gap-2 py-4 rounded-lg ${isIncome ? "bg-emerald-500/10" : "bg-destructive/10"}`}>
+                    {isIncome ? <ArrowUpRight className="h-6 w-6 text-emerald-500" /> : <ArrowDownLeft className="h-6 w-6 text-destructive" />}
+                    <span className={`text-2xl font-bold tabular-nums ${isIncome ? "text-emerald-500" : "text-destructive"}`}>
+                      ${selectedTxn.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                    </span>
+                  </div>
+
+                  <Separator />
+
+                  {/* Detail rows */}
+                  <div className="grid gap-3 text-sm">
+                    <DetailRow icon={Calendar} label="Date" value={new Date(selectedTxn.date).toLocaleDateString("en-US", { weekday: "short", year: "numeric", month: "long", day: "numeric" })} />
+                    <DetailRow icon={User} label="Paid To" value={selectedTxn.recipient} />
+                    <DetailRow icon={User} label="Paid By" value={selectedTxn.payer} />
+                    <DetailRow icon={FileText} label="Subject" value={selectedTxn.subject} />
+                    <DetailRow icon={CreditCard} label="Bank" value={selectedTxn.bank} />
+                    <DetailRow icon={DollarSign} label="Transaction ID" value={selectedTxn.transactionId} />
+                  </div>
+
+                  <Separator />
+
+                  <div>
+                    <p className="text-xs text-muted-foreground mb-1.5 font-medium">Reason</p>
+                    <ReasonBadges reason={selectedTxn.reason} />
+                  </div>
+                </div>
+              </>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
+  );
+}
+
+function DetailRow({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string }) {
+  return (
+    <div className="flex items-start gap-3">
+      <Icon className="h-4 w-4 text-muted-foreground mt-0.5 shrink-0" />
+      <div className="min-w-0">
+        <p className="text-xs text-muted-foreground">{label}</p>
+        <p className="font-medium break-words">{value}</p>
+      </div>
+    </div>
   );
 }

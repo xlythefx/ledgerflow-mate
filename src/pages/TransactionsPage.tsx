@@ -87,8 +87,8 @@ export default function TransactionsPage() {
             </SelectContent>
           </Select>
           <div className="ml-auto flex items-center gap-4 text-sm text-muted-foreground">
-            <span className="inline-flex items-center gap-1 text-emerald-500"><ArrowUpRight className="h-3.5 w-3.5" /> Incoming</span>
-            <span className="inline-flex items-center gap-1 text-destructive"><ArrowDownLeft className="h-3.5 w-3.5" /> Outgoing</span>
+            <span className="inline-flex items-center gap-1 text-emerald-500"><ArrowDownLeft className="h-3.5 w-3.5" /> Incoming</span>
+            <span className="inline-flex items-center gap-1 text-destructive"><ArrowUpRight className="h-3.5 w-3.5" /> Outgoing</span>
             <span className="text-muted-foreground">{filtered.length} transactions</span>
           </div>
         </div>
@@ -138,7 +138,7 @@ export default function TransactionsPage() {
                       const isIncome = txn.reason.startsWith("Income");
                       return (
                         <span className={`inline-flex items-center gap-1 ${isIncome ? "text-emerald-500" : "text-destructive"}`}>
-                          {isIncome ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownLeft className="h-4 w-4" />}
+                          {isIncome ? <ArrowDownLeft className="h-4 w-4" /> : <ArrowUpRight className="h-4 w-4" />}
                           ${txn.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                         </span>
                       );
@@ -176,7 +176,7 @@ export default function TransactionsPage() {
                 <div className="space-y-4 pt-2">
                   {/* Amount highlight */}
                   <div className={`flex items-center justify-center gap-2 py-4 rounded-lg ${isIncome ? "bg-emerald-500/10" : "bg-destructive/10"}`}>
-                    {isIncome ? <ArrowUpRight className="h-6 w-6 text-emerald-500" /> : <ArrowDownLeft className="h-6 w-6 text-destructive" />}
+                    {isIncome ? <ArrowDownLeft className="h-6 w-6 text-emerald-500" /> : <ArrowUpRight className="h-6 w-6 text-destructive" />}
                     <span className={`text-2xl font-bold tabular-nums ${isIncome ? "text-emerald-500" : "text-destructive"}`}>
                       ${selectedTxn.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                     </span>

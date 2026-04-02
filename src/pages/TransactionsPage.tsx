@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -126,7 +127,15 @@ export default function TransactionsPage() {
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground whitespace-nowrap">{txn.bank}</TableCell>
                   <TableCell className="text-sm font-medium text-right tabular-nums">
-                    ${txn.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                    {(() => {
+                      const isIncome = txn.reason.startsWith("Income");
+                      return (
+                        <span className={`inline-flex items-center gap-1 ${isIncome ? "text-emerald-500" : "text-destructive"}`}>
+                          {isIncome ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownLeft className="h-4 w-4" />}
+                          ${txn.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                        </span>
+                      );
+                    })()}
                   </TableCell>
                 </TableRow>
               ))}

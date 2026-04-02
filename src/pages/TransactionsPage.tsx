@@ -138,7 +138,7 @@ export default function TransactionsPage() {
                       const isIncome = txn.reason.startsWith("Income");
                       return (
                         <span className={`inline-flex items-center gap-1 ${isIncome ? "text-emerald-500" : "text-destructive"}`}>
-                          {isIncome ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownLeft className="h-4 w-4" />}
+                          {isIncome ? <ArrowDownLeft className="h-4 w-4" /> : <ArrowUpRight className="h-4 w-4" />}
                           ${txn.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                         </span>
                       );

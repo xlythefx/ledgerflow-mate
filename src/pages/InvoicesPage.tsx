@@ -407,7 +407,7 @@ export default function InvoicesPage() {
                         ${txn.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button size="sm" variant="outline" className="h-7 text-xs border-primary/30 text-primary hover:bg-primary/10">
+                        <Button size="sm" variant="outline" className="h-7 text-xs border-primary/30 text-primary hover:bg-primary/10" onClick={() => openUploadModal(txn.id)}>
                           <Upload className="h-3 w-3 mr-1" />
                           Attach
                         </Button>

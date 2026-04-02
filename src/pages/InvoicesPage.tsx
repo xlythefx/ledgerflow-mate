@@ -1,9 +1,15 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { DashboardLayout } from "@/components/DashboardLayout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+} from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -182,6 +188,34 @@ export default function InvoicesPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
 
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [uploadLinkedTxnId, setUploadLinkedTxnId] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [uploadNotes, setUploadNotes] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const openUploadModal = (txnId?: string) => {
+    setUploadLinkedTxnId(txnId ?? null);
+    setUploadedFile(null);
+    setUploadNotes("");
+    setUploadOpen(true);
+  };
+
+  const handleFileDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files[0];
+    if (file) setUploadedFile(file);
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) setUploadedFile(file);
+  };
+
+  const linkedTxn = uploadLinkedTxnId ? mockTransactions.find((t) => t.id === uploadLinkedTxnId) : null;
+
   const filteredInvoices = useMemo(() => {
     if (statusFilter === "all") return mockInvoices;
     return mockInvoices.filter((inv) => inv.status === statusFilter);
@@ -253,7 +287,7 @@ export default function InvoicesPage() {
                 {filteredInvoices.length} invoice{filteredInvoices.length !== 1 ? "s" : ""}
               </span>
               <div className="flex-1" />
-              <Button size="sm" variant="outline" className="h-8 text-xs border-border">
+              <Button size="sm" variant="outline" className="h-8 text-xs border-border" onClick={() => openUploadModal()}>
                 <Upload className="h-3.5 w-3.5 mr-1.5" />
                 Upload Invoice
               </Button>
@@ -373,7 +407,7 @@ export default function InvoicesPage() {
                         ${txn.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                       </TableCell>
                       <TableCell className="text-right">
-                        <Button size="sm" variant="outline" className="h-7 text-xs border-primary/30 text-primary hover:bg-primary/10">
+                        <Button size="sm" variant="outline" className="h-7 text-xs border-primary/30 text-primary hover:bg-primary/10" onClick={() => openUploadModal(txn.id)}>
                           <Upload className="h-3 w-3 mr-1" />
                           Attach
                         </Button>
@@ -397,6 +431,83 @@ export default function InvoicesPage() {
             )}
           </SheetContent>
         </Sheet>
+
+        {/* Upload Invoice Modal */}
+        <Dialog open={uploadOpen} onOpenChange={setUploadOpen}>
+          <DialogContent className="sm:max-w-[480px]">
+            <DialogHeader>
+              <DialogTitle>{linkedTxn ? "Attach Invoice" : "Upload Invoice"}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 pt-2">
+              {linkedTxn && (
+                <div className="bg-muted/50 border border-border rounded-lg p-3 space-y-1">
+                  <p className="text-xs text-muted-foreground">Linking to transaction</p>
+                  <p className="text-sm font-medium">{linkedTxn.recipient}</p>
+                  <p className="text-xs text-muted-foreground">{linkedTxn.subject} · ${linkedTxn.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}</p>
+                </div>
+              )}
+
+              {/* Drop zone */}
+              <div
+                className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
+                  dragOver ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/50"
+                }`}
+                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                onDragLeave={() => setDragOver(false)}
+                onDrop={handleFileDrop}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.jpg,.jpeg,.png,.webp"
+                  className="hidden"
+                  onChange={handleFileSelect}
+                />
+                {uploadedFile ? (
+                  <div className="flex flex-col items-center gap-2">
+                    <FileText className="h-10 w-10 text-primary" />
+                    <p className="text-sm font-medium">{uploadedFile.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {(uploadedFile.size / 1024).toFixed(1)} KB
+                    </p>
+                    <Button variant="ghost" size="sm" className="text-xs text-muted-foreground" onClick={(e) => { e.stopPropagation(); setUploadedFile(null); }}>
+                      <X className="h-3 w-3 mr-1" /> Remove
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center gap-2">
+                    <Upload className="h-10 w-10 text-muted-foreground/50" />
+                    <p className="text-sm text-muted-foreground">
+                      Drop a file here or <span className="text-primary font-medium">browse</span>
+                    </p>
+                    <p className="text-xs text-muted-foreground">PDF, JPG, PNG up to 20MB</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="upload-notes" className="text-xs">Notes (optional)</Label>
+                <Textarea
+                  id="upload-notes"
+                  placeholder="Add any notes about this invoice..."
+                  value={uploadNotes}
+                  onChange={(e) => setUploadNotes(e.target.value)}
+                  className="bg-card border-border text-sm resize-none h-20"
+                />
+              </div>
+            </div>
+            <DialogFooter className="gap-2 sm:gap-0">
+              <Button variant="outline" onClick={() => setUploadOpen(false)} className="border-border">
+                Cancel
+              </Button>
+              <Button disabled={!uploadedFile} onClick={() => setUploadOpen(false)}>
+                <Upload className="h-4 w-4 mr-1.5" />
+                {linkedTxn ? "Attach Invoice" : "Upload Invoice"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );

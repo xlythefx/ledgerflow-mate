@@ -188,6 +188,34 @@ export default function InvoicesPage() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
 
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [uploadLinkedTxnId, setUploadLinkedTxnId] = useState<string | null>(null);
+  const [dragOver, setDragOver] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+  const [uploadNotes, setUploadNotes] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const openUploadModal = (txnId?: string) => {
+    setUploadLinkedTxnId(txnId ?? null);
+    setUploadedFile(null);
+    setUploadNotes("");
+    setUploadOpen(true);
+  };
+
+  const handleFileDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const file = e.dataTransfer.files[0];
+    if (file) setUploadedFile(file);
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) setUploadedFile(file);
+  };
+
+  const linkedTxn = uploadLinkedTxnId ? mockTransactions.find((t) => t.id === uploadLinkedTxnId) : null;
+
   const filteredInvoices = useMemo(() => {
     if (statusFilter === "all") return mockInvoices;
     return mockInvoices.filter((inv) => inv.status === statusFilter);

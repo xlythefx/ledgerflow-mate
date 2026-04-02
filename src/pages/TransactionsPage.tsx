@@ -176,7 +176,7 @@ export default function TransactionsPage() {
                 <div className="space-y-4 pt-2">
                   {/* Amount highlight */}
                   <div className={`flex items-center justify-center gap-2 py-4 rounded-lg ${isIncome ? "bg-emerald-500/10" : "bg-destructive/10"}`}>
-                    {isIncome ? <ArrowUpRight className="h-6 w-6 text-emerald-500" /> : <ArrowDownLeft className="h-6 w-6 text-destructive" />}
+                    {isIncome ? <ArrowDownLeft className="h-6 w-6 text-emerald-500" /> : <ArrowUpRight className="h-6 w-6 text-destructive" />}
                     <span className={`text-2xl font-bold tabular-nums ${isIncome ? "text-emerald-500" : "text-destructive"}`}>
                       ${selectedTxn.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}
                     </span>

@@ -191,7 +191,7 @@ export default function TransactionsPage() {
                     <DetailRow icon={User} label="Paid By" value={selectedTxn.payer} />
                     <DetailRow icon={FileText} label="Subject" value={selectedTxn.subject} />
                     <DetailRow icon={CreditCard} label="Bank" value={selectedTxn.bank} />
-                    <DetailRow icon={DollarSign} label="Transaction ID" value={selectedTxn.transactionId} />
+                    <DetailRow icon={DollarSign} label="Invoice Number" value={selectedTxn.transactionId} />
                   </div>
 
                   <Separator />

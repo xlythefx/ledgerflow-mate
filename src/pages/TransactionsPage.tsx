@@ -87,8 +87,8 @@ export default function TransactionsPage() {
             </SelectContent>
           </Select>
           <div className="ml-auto flex items-center gap-4 text-sm text-muted-foreground">
-            <span className="inline-flex items-center gap-1 text-emerald-500"><ArrowUpRight className="h-3.5 w-3.5" /> Incoming</span>
-            <span className="inline-flex items-center gap-1 text-destructive"><ArrowDownLeft className="h-3.5 w-3.5" /> Outgoing</span>
+            <span className="inline-flex items-center gap-1 text-emerald-500"><ArrowDownLeft className="h-3.5 w-3.5" /> Incoming</span>
+            <span className="inline-flex items-center gap-1 text-destructive"><ArrowUpRight className="h-3.5 w-3.5" /> Outgoing</span>
             <span className="text-muted-foreground">{filtered.length} transactions</span>
           </div>
         </div>

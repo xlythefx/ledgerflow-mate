@@ -431,6 +431,83 @@ export default function InvoicesPage() {
             )}
           </SheetContent>
         </Sheet>
+
+        {/* Upload Invoice Modal */}
+        <Dialog open={uploadOpen} onOpenChange={setUploadOpen}>
+          <DialogContent className="sm:max-w-[480px]">
+            <DialogHeader>
+              <DialogTitle>{linkedTxn ? "Attach Invoice" : "Upload Invoice"}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 pt-2">
+              {linkedTxn && (
+                <div className="bg-muted/50 border border-border rounded-lg p-3 space-y-1">
+                  <p className="text-xs text-muted-foreground">Linking to transaction</p>
+                  <p className="text-sm font-medium">{linkedTxn.recipient}</p>
+                  <p className="text-xs text-muted-foreground">{linkedTxn.subject} · ${linkedTxn.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })}</p>
+                </div>
+              )}
+
+              {/* Drop zone */}
+              <div
+                className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
+                  dragOver ? "border-primary bg-primary/5" : "border-border hover:border-muted-foreground/50"
+                }`}
+                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+                onDragLeave={() => setDragOver(false)}
+                onDrop={handleFileDrop}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.jpg,.jpeg,.png,.webp"
+                  className="hidden"
+                  onChange={handleFileSelect}
+                />
+                {uploadedFile ? (
+                  <div className="flex flex-col items-center gap-2">
+                    <FileText className="h-10 w-10 text-primary" />
+                    <p className="text-sm font-medium">{uploadedFile.name}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {(uploadedFile.size / 1024).toFixed(1)} KB
+                    </p>
+                    <Button variant="ghost" size="sm" className="text-xs text-muted-foreground" onClick={(e) => { e.stopPropagation(); setUploadedFile(null); }}>
+                      <X className="h-3 w-3 mr-1" /> Remove
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center gap-2">
+                    <Upload className="h-10 w-10 text-muted-foreground/50" />
+                    <p className="text-sm text-muted-foreground">
+                      Drop a file here or <span className="text-primary font-medium">browse</span>
+                    </p>
+                    <p className="text-xs text-muted-foreground">PDF, JPG, PNG up to 20MB</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="upload-notes" className="text-xs">Notes (optional)</Label>
+                <Textarea
+                  id="upload-notes"
+                  placeholder="Add any notes about this invoice..."
+                  value={uploadNotes}
+                  onChange={(e) => setUploadNotes(e.target.value)}
+                  className="bg-card border-border text-sm resize-none h-20"
+                />
+              </div>
+            </div>
+            <DialogFooter className="gap-2 sm:gap-0">
+              <Button variant="outline" onClick={() => setUploadOpen(false)} className="border-border">
+                Cancel
+              </Button>
+              <Button disabled={!uploadedFile} onClick={() => setUploadOpen(false)}>
+                <Upload className="h-4 w-4 mr-1.5" />
+                {linkedTxn ? "Attach Invoice" : "Upload Invoice"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );

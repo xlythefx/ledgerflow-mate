@@ -287,7 +287,7 @@ export default function InvoicesPage() {
                 {filteredInvoices.length} invoice{filteredInvoices.length !== 1 ? "s" : ""}
               </span>
               <div className="flex-1" />
-              <Button size="sm" variant="outline" className="h-8 text-xs border-border">
+              <Button size="sm" variant="outline" className="h-8 text-xs border-border" onClick={() => openUploadModal()}>
                 <Upload className="h-3.5 w-3.5 mr-1.5" />
                 Upload Invoice
               </Button>

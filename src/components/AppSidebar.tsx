@@ -1,4 +1,4 @@
-import { LayoutDashboard, ArrowLeftRight, BarChart3, Bell, ExternalLink, Receipt, FileText, LogOut } from "lucide-react";
+import { LayoutDashboard, ArrowLeftRight, BarChart3, Bell, ExternalLink, Receipt, FileText, LogOut, Repeat } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -23,6 +23,7 @@ const navItems = [
   { title: "Transactions", url: "/", icon: Receipt },
   { title: "Reconciliation", url: "/reconciliation", icon: ArrowLeftRight },
   { title: "Invoices", url: "/invoices", icon: FileText },
+  { title: "Subscriptions", url: "/subscriptions", icon: Repeat },
   { title: "Reports", url: "/reports", icon: BarChart3 },
   { title: "Notifications", url: "/notifications", icon: Bell },
 ];
